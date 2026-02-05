@@ -293,31 +293,35 @@ public class CalendarController {
     }
 
     public void nextMonth() {
-        selectedDate = selectedDate.plusMonths(1);
-        monthLabel.setText(String.valueOf(selectedDate.getMonth()));
-        if (selectedDate.getMonth().equals(Month.JANUARY)) {
-            yearLabel.setText(String.valueOf(selectedDate.getYear()));
-        }
-        refreshCalendar(selectedDate);
+        navigateMonth(1);
     }
 
     public void previousMonth() {
-        selectedDate = selectedDate.minusMonths(1);
+        navigateMonth(-1);
+    }
+
+    private void navigateMonth(int monthOffset) {
+        selectedDate = selectedDate.plusMonths(monthOffset);
         monthLabel.setText(String.valueOf(selectedDate.getMonth()));
-        if (selectedDate.getMonth().equals(Month.DECEMBER)) {
+        // Update year label when crossing year boundary
+        boolean crossedYearBoundary = (monthOffset > 0 && selectedDate.getMonth().equals(Month.JANUARY)) ||
+                                       (monthOffset < 0 && selectedDate.getMonth().equals(Month.DECEMBER));
+        if (crossedYearBoundary) {
             yearLabel.setText(String.valueOf(selectedDate.getYear()));
         }
         refreshCalendar(selectedDate);
     }
 
     public void nextYear() {
-        selectedDate = selectedDate.plusYears(1);
-        yearLabel.setText(String.valueOf(selectedDate.getYear()));
-        refreshCalendar(selectedDate);
+        navigateYear(1);
     }
 
     public void previousYear() {
-        selectedDate = selectedDate.minusYears(1);
+        navigateYear(-1);
+    }
+
+    private void navigateYear(int yearOffset) {
+        selectedDate = selectedDate.plusYears(yearOffset);
         yearLabel.setText(String.valueOf(selectedDate.getYear()));
         refreshCalendar(selectedDate);
     }

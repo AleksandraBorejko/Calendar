@@ -43,13 +43,9 @@ public class NoteDao {
      * @param note Note object
      */
     public boolean insertNote(Note note) throws IOException, SQLException {
-        final Date date = Date.valueOf(note.getDate());
-        final String color = String.valueOf(note.getColorOrDefault());
-        final Time time = getTime(note);
-
         return databaseQueryExecutor.executeUpdateSqlFile(
                 "sql/insert_note.sql",
-                prepStmt -> insertNoteStatement(prepStmt, note, date, color, time)
+                prepStmt -> setNotePreparedStatementParameters(prepStmt, note)
         ) == 1;
     }
 
@@ -61,14 +57,10 @@ public class NoteDao {
      * @return
      */
     public boolean updateNote(Note note, long id) throws IOException, SQLException {
-        final Date date = Date.valueOf(note.getDate());
-        final String color = String.valueOf(note.getColorOrDefault());
-        final Time time = getTime(note);
-
         return databaseQueryExecutor.executeUpdateSqlFile(
                 "sql/update_note.sql",
                 prepStmt -> {
-                    insertNoteStatement(prepStmt, note, date, color, time);
+                    setNotePreparedStatementParameters(prepStmt, note);
                     prepStmt.setLong(7, id);
                 }
         ) == 1;
@@ -145,12 +137,11 @@ public class NoteDao {
         return time;
     }
 
-    private void insertNoteStatement(
-            PreparedStatement prepStmt,
-            Note note,
-            Date date,
-            String color,
-            Time time) throws SQLException {
+    private void setNotePreparedStatementParameters(PreparedStatement prepStmt, Note note) throws SQLException {
+        final Date date = Date.valueOf(note.getDate());
+        final String color = String.valueOf(note.getColorOrDefault());
+        final Time time = getTime(note);
+
         prepStmt.setDate(1, date);
         prepStmt.setTime(2, time);
         prepStmt.setString(3, note.getLocation());

@@ -74,51 +74,51 @@ public class NoteController {
     }
 
     public void addNote() {
+        if (validateNote()) {
+            insertNoteToDatabase();
+            closeWindowAndRefresh(addNoteButton);
+        }
+    }
+
+    public void updateNote() {
+        if (validateNote()) {
+            updateNoteInDatabase();
+            closeWindowAndRefresh(updateNoteButton);
+        }
+    }
+
+    private boolean validateNote() {
         Alert alert = new Alert(AlertType.WARNING);
         if (note.getTitle() == null && note.getDate() == null) {
             alert.setContentText("Please enter the title and the date");
             alert.show();
             alert.setOnHidden((e) -> {
-                titleField.setBorder(
-                        new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, new CornerRadii(3), null)));
-                datePicker.setBorder(
-                        new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, new CornerRadii(3), null)));
+                setErrorBorder(titleField);
+                setErrorBorder(datePicker);
             });
+            return false;
         } else if (note.getDate() == null) {
             alert.setContentText("Please select the date");
             alert.show();
-            alert.setOnHidden((e) -> datePicker.setBorder(
-                    new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, new CornerRadii(3), null))));
+            alert.setOnHidden((e) -> setErrorBorder(datePicker));
+            return false;
         } else if (note.getTitle() == null) {
             alert.setContentText("Please enter the title");
             alert.show();
-            alert.setOnHidden((e) -> titleField.setBorder(
-                    new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, new CornerRadii(3), null))));
-        } else {
-            insertNoteToDatabase();
-            Stage stage = (Stage) addNoteButton.getScene().getWindow();
-            stage.close();
-            calendarController.refreshCalendar(note.getDate());
+            alert.setOnHidden((e) -> setErrorBorder(titleField));
+            return false;
         }
+        return true;
     }
 
-    public void updateNote() {
-        Alert alert = new Alert(AlertType.WARNING);
-        if (note.getTitle() == null && note.getDate() == null) {
-            alert.setContentText("Please enter the title and the date");
-            alert.show();
-        } else if (note.getDate() == null) {
-            alert.setContentText("Please select the date");
-            alert.show();
-        } else if (note.getTitle() == null) {
-            alert.setContentText("Please enter the title");
-            alert.show();
-        } else {
-            updateNoteInDatabase();
-            Stage stage = (Stage) updateNoteButton.getScene().getWindow();
-            stage.close();
-            calendarController.refreshCalendar(note.getDate());
-        }
+    private void setErrorBorder(javafx.scene.layout.Region node) {
+        node.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, new CornerRadii(3), null)));
+    }
+
+    private void closeWindowAndRefresh(Button button) {
+        Stage stage = (Stage) button.getScene().getWindow();
+        stage.close();
+        calendarController.refreshCalendar(note.getDate());
     }
 
     private void updateNoteInDatabase() {
