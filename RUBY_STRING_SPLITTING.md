@@ -41,9 +41,9 @@ characters = word.each_char.to_a
 # => ["h", "e", "l", "l", "o"]
 ```
 
-## Method 4: Using Array Constructor
+## Method 4: Using `split` with Regex Pattern
 
-You can convert a string to an array using the array syntax:
+You can convert a string to an array using `split` with an empty regex pattern:
 
 ```ruby
 word = "hello"
