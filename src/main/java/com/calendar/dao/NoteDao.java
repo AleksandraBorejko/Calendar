@@ -141,7 +141,7 @@ public class NoteDao {
         final Date date = Date.valueOf(note.getDate());
         final String color = String.valueOf(note.getColorOrDefault());
         final Time time = getTime(note);
-        
+
         prepStmt.setDate(1, date);
         prepStmt.setTime(2, time);
         prepStmt.setString(3, note.getLocation());

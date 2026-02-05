@@ -304,8 +304,9 @@ public class CalendarController {
         selectedDate = selectedDate.plusMonths(monthOffset);
         monthLabel.setText(String.valueOf(selectedDate.getMonth()));
         // Update year label when crossing year boundary
-        if ((monthOffset > 0 && selectedDate.getMonth().equals(Month.JANUARY)) ||
-            (monthOffset < 0 && selectedDate.getMonth().equals(Month.DECEMBER))) {
+        boolean crossedYearBoundary = (monthOffset > 0 && selectedDate.getMonth().equals(Month.JANUARY)) ||
+                                       (monthOffset < 0 && selectedDate.getMonth().equals(Month.DECEMBER));
+        if (crossedYearBoundary) {
             yearLabel.setText(String.valueOf(selectedDate.getYear()));
         }
         refreshCalendar(selectedDate);
